@@ -39,6 +39,7 @@
         .icon-config { background: linear-gradient(135deg, #f39c12, #e67e22); }
         .icon-contact { background: linear-gradient(135deg, #27ae60, #229954); }
         .icon-special { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .icon-uat { background: linear-gradient(135deg, #16a085, #1abc9c); }
         .form-group { margin-bottom:20px; }
         .form-group label { display:block; font-weight:600; color:#2c3e50; margin-bottom:8px; font-size:14px; }
         .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px 15px; border:2px solid #e9ecef; border-radius:10px; font-size:16px; transition: all 0.3s ease; background: linear-gradient(135deg, #ffffff, #f8f9fa); }
@@ -57,6 +58,8 @@
         .btn-primary:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(102,126,234,0.4); background: linear-gradient(135deg, #764ba2, #667eea); }
         .btn-secondary { background: linear-gradient(135deg, #95a5a6, #7f8c8d); color:white; }
         .btn-secondary:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(149,165,166,0.4); }
+        .btn-excel { background: linear-gradient(135deg, #16a085, #1abc9c); color:white; }
+        .btn-excel:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(22,160,133,0.4); }
         .email-preview { margin-top:40px; padding:30px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius:15px; border:3px solid #dee2e6; display:none; box-shadow:0 10px 20px rgba(0,0,0,0.1); }
         .email-preview h3 { color:#2c3e50; margin-bottom:20px; font-size:1.4em; display:flex; align-items:center; gap:10px; }
         .email-content { background: linear-gradient(135deg, #ffffff, #f8f9fa); padding:25px; border-radius:12px; font-family:'Courier New', monospace; white-space:pre-wrap; border:2px solid #dee2e6; max-height:500px; overflow-y:auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
@@ -68,14 +71,22 @@
         .badge-installation { background: linear-gradient(135deg, #3498db, #2980b9); }
         .badge-qa { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .badge-ui { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .badge-uat { background: linear-gradient(135deg, #16a085, #1abc9c); }
         .other-input { display:none; margin-top:10px; }
+        .uat-info { background: linear-gradient(135deg, #e8f8f5, #d5f4e6); border: 2px solid #16a085; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .uat-info h4 { color: #0e6b5c; margin-bottom: 10px; }
+        .uat-info p { color: #2c3e50; margin-bottom: 8px; }
+        .category-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px; }
+        .category-card { background: white; border-radius: 8px; padding: 15px; border-left: 4px solid #16a085; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .category-card h5 { color: #16a085; margin-bottom: 8px; font-size: 14px; }
+        .category-card p { color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🚀 Multi-Template Email Generator</h1>
-            <p>Create professional installation tickets, QA checklists, and UI requests with style</p>
+            <p>Create professional installation tickets, QA checklists, UI requests, and UAT Excel files</p>
         </div>
 
         <div class="template-selector">
@@ -84,6 +95,7 @@
                 <option value="installation">📋 Installation Ticket</option>
                 <option value="qa">✅ QA Checklist</option>
                 <option value="ui">🎨 UI Request</option>
+                <option value="uat">📊 UAT Excel Generator</option>
             </select>
         </div>
 
@@ -768,291 +780,109 @@
                 </div>
             </div>
 
+            <!-- UAT Excel Generator Form -->
+            <div id="uatForm" class="template-form">
+                <div class="uat-info">
+                    <h4>📊 UAT Excel Checklist Generator</h4>
+                    <p>Generate a comprehensive UAT checklist Excel file with 4 testing categories and 40 test items.</p>
+                    <div class="category-preview">
+                        <div class="category-card">
+                            <h5>🔧 Functional Testing</h5>
+                            <p>10 test items covering core functionality verification</p>
+                        </div>
+                        <div class="category-card">
+                            <h5>🎨 User Interface Testing</h5>
+                            <p>10 test items for UI/UX validation</p>
+                        </div>
+                        <div class="category-card">
+                            <h5>🔗 Integration Testing</h5>
+                            <p>10 test items for system integrations</p>
+                        </div>
+                        <div class="category-card">
+                            <h5>⚡ Performance Testing</h5>
+                            <p>10 test items for system performance validation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-uat">📋</span>Project Information<span class="template-badge badge-uat">UAT</span></h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="uat_projectName">Project Name:</label>
+                            <input type="text" id="uat_projectName" name="uat_projectName" required placeholder="Enter project name">
+                        </div>
+                        <div class="form-group">
+                            <label for="uat_salesOrder">Sales Order:</label>
+                            <input type="text" id="uat_salesOrder" name="uat_salesOrder" placeholder="SO number (optional)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="uat_channelPartner">Channel Partner (CP):</label>
+                            <input type="text" id="uat_channelPartner" name="uat_channelPartner" placeholder="Channel partner name">
+                        </div>
+                        <div class="form-group">
+                            <label for="uat_endClient">End Client (CX):</label>
+                            <input type="text" id="uat_endClient" name="uat_endClient" placeholder="End client name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="uat_uatLead">UAT Lead:</label>
+                            <input type="text" id="uat_uatLead" name="uat_uatLead" placeholder="UAT lead name">
+                        </div>
+                        <div class="form-group">
+                            <label for="uat_uatDate">UAT Date:</label>
+                            <input type="date" id="uat_uatDate" name="uat_uatDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-config">⚙️</span>System Configuration</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="uat_kioskType">Kiosk Type:</label>
+                            <select id="uat_kioskType" name="uat_kioskType" onchange="toggleOtherField('uat_kioskType','uat_kioskType_other')">
+                                <option value="">Select Kiosk Type</option>
+                                <option value="SparkXL">SparkXL</option>
+                                <option value="Spark Touch">Spark Touch</option>
+                                <option value="Retail Enclosure">Retail Enclosure</option>
+                                <option value="10'Smart Companion">10'Smart Companion</option>
+                                <option value="15'Smart Companion">15'Smart Companion</option>
+                                <option value="Control Locker">Control Locker</option>
+                                <option value="HDL Locker">HDL Locker</option>
+                                <option value="Stand Up Ted">Stand Up Ted</option>
+                                <option value="Sit-Down Ted">Sit-Down Ted</option>
+                                <option value="Smart Drawer">Smart Drawer</option>
+                                <option value="SK Dispenser">SK Dispenser</option>
+                                <option value="Wall-mount Kiosk">Wall-mount Kiosk</option>
+                                <option value="Key Locker">Key Locker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="uat_kioskType_other" name="uat_kioskType_other" class="other-input" placeholder="Specify other kiosk type">
+                        </div>
+                        <div class="form-group">
+                            <label for="uat_workflow">Workflow:</label>
+                            <select id="uat_workflow" name="uat_workflow" onchange="toggleOtherField('uat_workflow','uat_workflow_other')">
+                                <option value="">Select Workflow</option>
+                                <option value="ITSM Vending">ITSM Vending</option>
+                                <option value="Smart Workflow">Smart Workflow</option>
+                                <option value="GrabnGo">GrabnGo</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="uat_workflow_other" name="uat_workflow_other" class="other-input" placeholder="Specify other workflow">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uat_specialRequirements">Special Testing Requirements:</label>
+                        <textarea id="uat_specialRequirements" name="uat_specialRequirements" placeholder="Any specific testing requirements, edge cases, or special scenarios to validate"></textarea>
+                    </div>
+                </div>
+            </div>
+
             <div class="button-group">
                 <button type="button" id="generateBtn" class="btn btn-primary">🚀 Generate Email</button>
-                <button type="button" id="clearBtn" class="btn btn-secondary">🗑️ Clear Form</button>
-            </div>
-
-            <div id="emailPreview" class="email-preview">
-                <h3>📧 Generated Email Content</h3>
-                <div id="emailContent" class="email-content"></div>
-                <button id="copyBtn" class="btn copy-btn">📋 Copy to Clipboard</button>
-                <div id="successMessage" class="success-message">✅ Email content copied to clipboard!</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Template switching
-        document.getElementById('templateSelect').addEventListener('change', function() {
-            const selectedTemplate = this.value;
-            document.querySelectorAll('.template-form').forEach(f => f.classList.remove('active'));
-            document.getElementById(selectedTemplate + 'Form').classList.add('active');
-            document.getElementById('emailPreview').style.display = 'none';
-        });
-
-        // Generate email button
-        document.getElementById('generateBtn').addEventListener('click', function() {
-            const activeTemplate = document.querySelector('.template-form.active').id;
-            switch(activeTemplate) {
-                case 'installationForm': generateInstallationEmail(); break;
-                case 'qaForm': generateQAEmail(); break;
-                case 'uiForm': generateUIEmail(); break;
-            }
-        });
-
-        // Clear form button
-        document.getElementById('clearBtn').addEventListener('click', function() {
-            const activeForm = document.querySelector('.template-form.active');
-            const inputs = activeForm.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                if (input.type === 'checkbox') input.checked = false; else input.value = '';
-                localStorage.removeItem(`form_${input.name}`);
-                if (input.classList.contains('other-input')) input.style.display = 'none';
-            });
-            document.getElementById('emailPreview').style.display = 'none';
-        });
-
-        // Copy to clipboard
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            const emailContent = document.getElementById('emailContent').textContent;
-            navigator.clipboard.writeText(emailContent).then(function() {
-                const successMessage = document.getElementById('successMessage');
-                successMessage.style.display = 'block';
-                setTimeout(() => { successMessage.style.display = 'none'; }, 3000);
-            }).catch(function() { alert('Failed to copy to clipboard. Please select and copy manually.'); });
-        });
-
-        // Helper: Date formatting
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-        }
-
-        // Helper: display email
-        function displayEmail(content) {
-            document.getElementById('emailContent').textContent = content;
-            document.getElementById('emailPreview').style.display = 'block';
-            document.getElementById('emailPreview').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Toggle Other input visibility
-        function toggleOtherField(selectId, otherInputId) {
-            const select = document.getElementById(selectId);
-            const otherInput = document.getElementById(otherInputId);
-            if (select && otherInput) {
-                if (select.value === 'Other') {
-                    otherInput.style.display = 'block';
-                } else {
-                    otherInput.style.display = 'none';
-                    otherInput.value = '';
-                }
-            }
-        }
-
-        // Generate Installation Email
-        function generateInstallationEmail() {
-            const form = document.getElementById('installationForm');
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) { data[key] = value || 'N/A'; }
-
-            // apply Other overrides
-            if (data.inst_kioskType === 'Other' && data.inst_kioskType_other) data.inst_kioskType = data.inst_kioskType_other;
-            if (data.inst_screenSize === 'Other' && data.inst_screenSize_other) data.inst_screenSize = data.inst_screenSize_other;
-            if (data.inst_workflow === 'Other' && data.inst_workflow_other) data.inst_workflow = data.inst_workflow_other;
-            if (data.inst_authPayment === 'Other' && data.inst_authPayment_other) data.inst_authPayment = data.inst_authPayment_other;
-            if (data.inst_hosting === 'Other' && data.inst_hosting_other) data.inst_hosting = data.inst_hosting_other;
-            if (data.inst_internetConnectivity === 'Other' && data.inst_internetConnectivity_other) data.inst_internetConnectivity = data.inst_internetConnectivity_other;
-            if (data.inst_voltage === 'Other' && data.inst_voltage_other) data.inst_voltage = data.inst_voltage_other;
-            if (data.inst_plugType === 'Other' && data.inst_plugType_other) data.inst_plugType = data.inst_plugType_other;
-
-            // dates
-            if (data.inst_shippingDate) data.inst_shippingDate = formatDate(data.inst_shippingDate);
-            if (data.inst_deliveryDate) data.inst_deliveryDate = formatDate(data.inst_deliveryDate);
-            if (data.inst_installationDate) data.inst_installationDate = formatDate(data.inst_installationDate);
-            if (data.inst_vinylDate) data.inst_vinylDate = formatDate(data.inst_vinylDate);
-
-            const emailContent = `Subject: Installation Ticket – ${data.inst_clientEvent}
-
-Installation Ticket – ${data.inst_clientEvent}
-
-1. Sales Order (SO): ${data.inst_salesOrder}
-2. Naming Convention and Address: ${data.inst_namingConvention}
-3. Channel Partner (CP): ${data.inst_channelPartner}
-4. End Client (CX): ${data.inst_endClient}
-5. Shipping Date: ${data.inst_shippingDate}
-6. Delivery Date: ${data.inst_deliveryDate}
-7. Requested Installation Date: ${data.inst_installationDate}
-8. Vinyl Date: ${data.inst_vinylDate}
-9. Kiosk Type: ${data.inst_kioskType}
-10. Vending Unit Elevator: ${data.inst_vendingElevator}
-11. Screen Size: ${data.inst_screenSize}
-12. Workflow: ${data.inst_workflow}
-13. Authentication/Payment Device: ${data.inst_authPayment}
-14. Payment Device Configuration: ${data.inst_paymentConfig}
-15. Language: ${data.inst_language}
-16. ADA Keypad: ${data.inst_adaKeypad}
-17. Hosting: ${data.inst_hosting}
-18. Internet Connectivity: ${data.inst_internetConnectivity}
-19. IT Site Survey: ${data.inst_itSiteSurvey}
-20. Product Template: ${data.inst_productTemplate}
-21. UI for Previous Deployments: ${data.inst_uiPrevious}
-22. UI Task Link: ${data.inst_uiTaskLink}
-23. Orientation of the Vending/Locker: ${data.inst_orientation}
-24. Voltage: ${data.inst_voltage}
-25. Plug Type: ${data.inst_plugType}
-26. Point of Contact (POC): ${data.inst_pointOfContact}
-
-Special Requirements: ${data.inst_specialRequirements}
-
-Scope of Work: ${data.inst_scopeOfWork}`;
-            displayEmail(emailContent);
-        }
-
-        // Generate QA Email
-        function generateQAEmail() {
-            const form = document.getElementById('qaForm');
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) { data[key] = value || 'N/A'; }
-
-            // apply Other overrides
-            if (data.qa_kioskType === 'Other' && data.qa_kioskType_other) data.qa_kioskType = data.qa_kioskType_other;
-            if (data.qa_vendingElevator === 'Other' && data.qa_vendingElevator_other) data.qa_vendingElevator = data.qa_vendingElevator_other;
-            if (data.qa_screenSize === 'Other' && data.qa_screenSize_other) data.qa_screenSize = data.qa_screenSize_other;
-            if (data.qa_workflow === 'Other' && data.qa_workflow_other) data.qa_workflow = data.qa_workflow_other;
-            if (data.qa_authPayment === 'Other' && data.qa_authPayment_other) data.qa_authPayment = data.qa_authPayment_other;
-            if (data.qa_hosting === 'Other' && data.qa_hosting_other) data.qa_hosting = data.qa_hosting_other;
-            if (data.qa_internetConnectivity === 'Other' && data.qa_internetConnectivity_other) data.qa_internetConnectivity = data.qa_internetConnectivity_other;
-            if (data.qa_voltage === 'Other' && data.qa_voltage_other) data.qa_voltage = data.qa_voltage_other;
-            if (data.qa_plugType === 'Other' && data.qa_plugType_other) data.qa_plugType = data.qa_plugType_other;
-
-            if (data.qa_shippingDate) data.qa_shippingDate = formatDate(data.qa_shippingDate);
-            if (data.qa_vinylDate) data.qa_vinylDate = formatDate(data.qa_vinylDate);
-
-            const emailContent = `Subject: QA Checklist – ${data.qa_deploymentName}
-
-QA Checklist – ${data.qa_deploymentName}
-
-Sales Order: ${data.qa_salesOrder}
-
-Shipping Date: ${data.qa_shippingDate}
-
-Vinyl Date: ${data.qa_vinylDate}
-
-Naming Convention and Address:
-Naming: ${data.qa_naming}
-Address: ${data.qa_address}
-
-Channel Partner (CP): ${data.qa_channelPartner}
-End Client (CX): ${data.qa_endClient}
-
-Kiosk Type: ${data.qa_kioskType}
-
-Vending Unit Elevator: ${data.qa_vendingElevator}
-
-Screen Size: ${data.qa_screenSize}
-
-Workflow: ${data.qa_workflow}
-
-Authentication/Payment Device: ${data.qa_authPayment}
-
-Payment Device: ${data.qa_paymentDevice}
-
-Language: ${data.qa_language}
-
-ADA Keypad: ${data.qa_adaKeypad}
-
-Hosting: ${data.qa_hosting}
-
-Internet Connectivity: ${data.qa_internetConnectivity}
-
-IT Site Survey: ${data.qa_itSiteSurvey}
-
-Payment Device Configuration: ${data.qa_paymentConfig}
-
-Product Template: ${data.qa_productTemplate}
-
-UI for Previous Deployments: ${data.qa_uiPrevious}
-
-UI Task Link: ${data.qa_uiTaskLink}
-
-Orientation of the Vending/Locker: ${data.qa_orientation}
-
-Voltage: ${data.qa_voltage}
-
-Plug Type: ${data.qa_plugType}
-
-Special Requirements: ${data.qa_specialRequirements}`;
-            displayEmail(emailContent);
-        }
-
-        // Generate UI Email
-        function generateUIEmail() {
-            const form = document.getElementById('uiForm');
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                if (key.includes('workflows') || key.includes('languages') || key.includes('branding')) continue;
-                data[key] = value || 'N/A';
-            }
-            const workflows = Array.from(form.querySelectorAll('input[name="ui_workflows"]:checked')).map(cb => cb.value);
-            const languages = Array.from(form.querySelectorAll('input[name="ui_languages"]:checked')).map(cb => cb.value);
-            const branding = Array.from(form.querySelectorAll('input[name="ui_branding"]:checked')).map(cb => cb.value);
-
-            // Other overrides for UI
-            if (data.ui_kioskType === 'Other' && data.ui_kioskType_other) data.ui_kioskType = data.ui_kioskType_other;
-            if (data.ui_vendingElevator === 'Other' && data.ui_vendingElevator_other) data.ui_vendingElevator = data.ui_vendingElevator_other;
-            if (data.ui_screenSize === 'Other' && data.ui_screenSize_other) data.ui_screenSize = data.ui_screenSize_other;
-            if (data.ui_authentication === 'Other' && data.ui_authentication_other) data.ui_authentication = data.ui_authentication_other;
-            if (data.ui_hosting === 'Other' && data.ui_hosting_other) data.ui_hosting = data.ui_hosting_other;
-
-            let workflowList = workflows.join(', ');
-            if (data.ui_workflowOther && data.ui_workflowOther !== 'N/A') workflowList += (workflowList ? ', ' : '') + data.ui_workflowOther;
-            let languageList = languages.join(', ');
-            if (data.ui_languageOther && data.ui_languageOther !== 'N/A') languageList += (languageList ? ', ' : '') + data.ui_languageOther;
-            let brandingList = branding.join(', ');
-            if (data.ui_brandingOther && data.ui_brandingOther !== 'N/A') brandingList += (brandingList ? ', ' : '') + data.ui_brandingOther;
-
-            const emailContent = `Subject: UI Request
-
-UI Request
-
-CP: ${data.ui_cp}
-CX: ${data.ui_cx}
-Kiosk Type: ${data.ui_kioskType}
-Vending Unit Elevator: ${data.ui_vendingElevator}
-Screen Size: ${data.ui_screenSize}
-Smart Workflows: ${workflowList || 'N/A'}
-Authentication: ${data.ui_authentication}
-Payment Device: ${data.ui_paymentDevice}
-Language: ${languageList || 'English (Default)'}
-ADA Keypad: ${data.ui_adaKeypad}
-API Integration: ${data.ui_apiIntegration}
-Hosting: ${data.ui_hosting}
-Vision URL: ${data.ui_visionUrl}
-Attachments: ${data.ui_attachments}
-Branding Documents: ${brandingList || 'N/A'}
-SOW: ${data.ui_sow}`;
-            displayEmail(emailContent);
-        }
-
-        // Auto-save functionality
-        const allInputs = document.querySelectorAll('input, select, textarea');
-        allInputs.forEach(input => {
-            const savedValue = localStorage.getItem(`form_${input.name}`);
-            if (savedValue && input.type !== 'date') {
-                if (input.type === 'checkbox') input.checked = savedValue === 'true';
-                else input.value = savedValue;
-                if (input.classList.contains('other-input') && input.value) input.style.display = 'block';
-            }
-            input.addEventListener('change', () => {
-                if (input.type === 'checkbox') localStorage.setItem(`form_${input.name}`, input.checked);
-                else localStorage.setItem(`form_${input.name}`, input.value);
-            });
-        });
-    </script>
-</body>
-</html>
+                <button type="button" id="generateExcelBtn" class="btn btn-excel" style="display:none;">📊 Generate UAT Excel</button>
+                <button type="button" id="clearBtn" class="btn btn-secondary
