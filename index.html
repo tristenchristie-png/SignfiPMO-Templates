@@ -1,1400 +1,1059 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi-Template Generator - Installation, QA, UI Request & UAT</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-    }
-    
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      color: white;
-    }
-    
-    .header h1 {
-      font-size: 2.5rem;
-      margin: 0 0 10px 0;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-      margin: 0;
-    }
-    
-    .template-selector {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    
-    .template-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .tab-button {
-      padding: 12px 24px;
-      border: none;
-      background: #f8f9fa;
-      color: #666;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      flex: 1;
-      min-width: 150px;
-    }
-    
-    .tab-button.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-    
-    .tab-button:hover:not(.active) {
-      background: #e9ecef;
-      transform: translateY(-1px);
-    }
-    
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    
-    @media (max-width: 768px) {
-      .main-content {
-        grid-template-columns: 1fr;
-      }
-      .template-tabs {
-        flex-direction: column;
-      }
-      .tab-button {
-        min-width: auto;
-      }
-    }
-    
-    .form-section, .output-section {
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #333;
-      border-bottom: 3px solid #667eea;
-      padding-bottom: 10px;
-    }
-    
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-    
-    .form-row-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-    
-    @media (max-width: 600px) {
-      .form-row, .form-row-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: #555;
-      font-size: 14px;
-    }
-    
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: border-color 0.3s ease;
-    }
-    
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-    
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 25px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      flex: 1;
-      min-width: 120px;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-    
-    .btn-secondary {
-      background: #6c757d;
-      color: white;
-    }
-    
-    .btn-secondary:hover {
-      background: #5a6268;
-      transform: translateY(-1px);
-    }
-    
-    .btn-success {
-      background: #28a745;
-      color: white;
-    }
-    
-    .btn-success:hover {
-      background: #218838;
-      transform: translateY(-1px);
-    }
-    
-    .output-area {
-      background: #f8f9fa;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      padding: 20px;
-      min-height: 400px;
-      white-space: pre-wrap;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    
-    .template-section {
-      display: none;
-    }
-    
-    .template-section.active {
-      display: block;
-    }
-    
-    .hidden {
-      display: none !important;
-    }
-    
-    .kiosk-other-field {
-      margin-top: 10px;
-    }
-    
-    /* Checkbox groups */
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 5px;
-    }
-    
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .checkbox-item input[type="checkbox"] {
-      width: auto;
-      margin: 0;
-    }
-    
-    /* UAT Checklist specific styles */
-    .uat-header-fields {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .uat-checklist-container {
-      max-height: 400px;
-      overflow-y: auto;
-      border: 2px solid #e9ecef;
-      border-radius: 10px;
-      padding: 15px;
-      background: #fafafa;
-    }
-    
-    .checklist-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 15px;
-      align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #e9ecef;
-      background: white;
-      margin-bottom: 8px;
-      border-radius: 5px;
-    }
-    
-    .checklist-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-    
-    .checklist-checkbox {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-    
-    .checklist-description {
-      font-size: 14px;
-      color: #333;
-    }
-    
-    .checklist-remarks {
-      width: 200px;
-      padding: 5px 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-    
-    @media (max-width: 768px) {
-      .checklist-item {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      
-      .checklist-remarks {
-        width: 100%;
-      }
-    }
-    
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #28a745;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      z-index: 1000;
-      transform: translateX(400px);
-      transition: transform 0.3s ease;
-    }
-    
-    .toast.show {
-      transform: translateX(0);
-    }
-    
-    .subsection {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    
-    .subsection h4 {
-      margin: 0 0 15px 0;
-      color: #667eea;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Template Email Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientShift 10s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); }
+            50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%); }
+        }
+        .container { max-width: 1200px; margin: 0 auto; background: rgba(255,255,255,0.95); border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); overflow: hidden; backdrop-filter: blur(10px); }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2, #f093fb); color: white; padding: 40px; text-align: center; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        .header h1 { font-size: 3em; margin-bottom: 15px; position: relative; z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2em; opacity: 0.95; position: relative; z-index: 2; }
+        .template-selector { padding: 30px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-bottom: 3px solid #dee2e6; text-align: center; }
+        .template-selector label { font-weight: 700; color: #2c3e50; margin-right: 20px; font-size: 1.1em; }
+        .template-selector select { padding: 15px 20px; border: 3px solid #ddd; border-radius: 12px; font-size: 16px; background: linear-gradient(135deg, #ffffff, #f8f9fa); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .template-selector select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102,126,234,0.2); transform: translateY(-2px); }
+        .form-container { padding: 40px; background: linear-gradient(135deg, #ffffff, #f8f9fa); }
+        .template-form { display: none; }
+        .template-form.active { display: block; animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(20px);} to{ opacity:1; transform: translateY(0);} }
+        .form-section { background: linear-gradient(135deg, #ffffff, #f1f3f4); border-radius: 15px; padding: 25px; margin-bottom: 25px; border-left: 5px solid #667eea; box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+        .form-section h3 { color:#2c3e50; margin-bottom:20px; font-size:1.3em; display:flex; align-items:center; gap:10px; }
+        .section-icon { width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; color:white; font-weight:bold; }
+        .icon-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .icon-tech { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .icon-config { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .icon-contact { background: linear-gradient(135deg, #27ae60, #229954); }
+        .icon-special { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .form-group { margin-bottom:20px; }
+        .form-group label { display:block; font-weight:600; color:#2c3e50; margin-bottom:8px; font-size:14px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; padding:12px 15px; border:2px solid #e9ecef; border-radius:10px; font-size:16px; transition: all 0.3s ease; background: linear-gradient(135deg, #ffffff, #f8f9fa); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,0.1); transform: translateY(-1px); }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-row { display:grid; grid-template-columns: 1fr 1fr; gap:20px; }
+        .form-row-3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; }
+        @media (max-width:768px){ .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+        .checkbox-group { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:15px; margin-top:10px; }
+        .checkbox-item { display:flex; align-items:center; gap:8px; padding:10px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius:8px; transition: all 0.3s ease; }
+        .checkbox-item:hover { background: linear-gradient(135deg, #e9ecef, #dee2e6); transform: translateY(-1px); }
+        .checkbox-item input[type="checkbox"] { width:auto; margin:0; accent-color:#667eea; }
+        .button-group { display:flex; gap:20px; justify-content:center; margin-top:40px; padding-top:30px; border-top:2px solid #e9ecef; }
+        .btn { padding:18px 35px; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; transition: all 0.3s ease; text-decoration:none; display:inline-block; text-align:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color:white; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(102,126,234,0.4); background: linear-gradient(135deg, #764ba2, #667eea); }
+        .btn-secondary { background: linear-gradient(135deg, #95a5a6, #7f8c8d); color:white; }
+        .btn-secondary:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(149,165,166,0.4); }
+        .email-preview { margin-top:40px; padding:30px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius:15px; border:3px solid #dee2e6; display:none; box-shadow:0 10px 20px rgba(0,0,0,0.1); }
+        .email-preview h3 { color:#2c3e50; margin-bottom:20px; font-size:1.4em; display:flex; align-items:center; gap:10px; }
+        .email-content { background: linear-gradient(135deg, #ffffff, #f8f9fa); padding:25px; border-radius:12px; font-family:'Courier New', monospace; white-space:pre-wrap; border:2px solid #dee2e6; max-height:500px; overflow-y:auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .copy-btn { margin-top:20px; background: linear-gradient(135deg, #27ae60, #229954); color:white; }
+        .copy-btn:hover { transform: translateY(-3px); box-shadow:0 12px 24px rgba(39,174,96,0.4); }
+        .success-message { background: linear-gradient(135deg, #d4edda, #c3e6cb); color:#155724; padding:15px 20px; border-radius:10px; margin-top:15px; display:none; border:2px solid #b8daff; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity:0; transform: translateX(-20px);} to { opacity:1; transform: translateX(0);} }
+        .template-badge { display:inline-block; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; margin-left:10px; color:white; }
+        .badge-installation { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .badge-qa { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .badge-ui { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .other-input { display:none; margin-top:10px; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Multi-Template Generator</h1>
-      <p>Installation Tickets, QA Checklists, UI Requests & UAT Checklists</p>
-    </div>
-    
-    <div class="template-selector">
-      <div class="template-tabs">
-        <button class="tab-button active" data-template="installation">Installation Ticket</button>
-        <button class="tab-button" data-template="qa">QA Checklist</button>
-        <button class="tab-button" data-template="ui">UI Request</button>
-        <button class="tab-button" data-template="uat">UAT Checklist</button>
-      </div>
-    </div>
-    
-    <div class="main-content">
-      <div class="form-section">
-        <!-- Installation Ticket Template -->
-        <div id="installation" class="template-section active">
-          <h2 class="section-title">Installation Ticket</h2>
-          
-          <div class="form-group">
-            <label for="inst-client-event">Client / Event Name</label>
-            <input type="text" id="inst-client-event" placeholder="Enter client or event name">
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-so">1. Sales Order (SO)</label>
-              <input type="text" id="inst-so" placeholder="Insert SO number">
-            </div>
-            <div class="form-group">
-              <label for="inst-naming">2. Naming Convention</label>
-              <input type="text" id="inst-naming" placeholder="Insert Kiosk ID(s)">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="inst-address">Address</label>
-            <textarea id="inst-address" placeholder="Insert full address, including building name if applicable"></textarea>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-cp">3. Channel Partner (CP)</label>
-              <input type="text" id="inst-cp" placeholder="Insert Channel Partner or 'Direct'">
-            </div>
-            <div class="form-group">
-              <label for="inst-cx">4. End Client (CX)</label>
-              <input type="text" id="inst-cx" placeholder="Insert End Client name">
-            </div>
-          </div>
-          
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="inst-shipping-date">5. Shipping Date</label>
-              <input type="date" id="inst-shipping-date">
-            </div>
-            <div class="form-group">
-              <label for="inst-delivery-date">6. Delivery Date</label>
-              <input type="date" id="inst-delivery-date">
-            </div>
-            <div class="form-group">
-              <label for="inst-install-date">7. Requested Installation Date</label>
-              <input type="date" id="inst-install-date">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-vinyl-date">8. Vinyl Date</label>
-              <input type="date" id="inst-vinyl-date">
-            </div>
-            <div class="form-group">
-              <label for="inst-kiosk-type">9. Kiosk Type</label>
-              <select id="inst-kiosk-type" class="kiosk-select">
-                <option value="">Select kiosk type...</option>
-              </select>
-              <div id="inst-kiosk-other" class="kiosk-other-field hidden">
-                <input type="text" id="inst-kiosk-other-text" placeholder="Specify other kiosk type">
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-elevator">10. Vending Unit Elevator</label>
-              <input type="text" id="inst-elevator" placeholder="Insert elevator type or 'N/A'">
-            </div>
-            <div class="form-group">
-              <label for="inst-screen-size">11. Screen Size</label>
-              <input type="text" id="inst-screen-size" placeholder="e.g. 10', 15', 32'">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-workflow">12. Workflow</label>
-              <input type="text" id="inst-workflow" placeholder="e.g. ITSM Vending, Smart Workflow, GrabnGo">
-            </div>
-            <div class="form-group">
-              <label for="inst-auth-payment">13. Authentication/Payment Device</label>
-              <input type="text" id="inst-auth-payment" placeholder="e.g. Badge ID, Barcode Scanner, Credit Card">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-payment-config">14. Payment Device Configuration</label>
-              <input type="text" id="inst-payment-config" placeholder="Insert configuration details or 'N/A'">
-            </div>
-            <div class="form-group">
-              <label for="inst-language">15. Language</label>
-              <input type="text" id="inst-language" placeholder="Insert supported language(s)">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-ada-keypad">16. ADA Keypad</label>
-              <select id="inst-ada-keypad">
-                <option value="">Select...</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inst-hosting">17. Hosting</label>
-              <input type="text" id="inst-hosting" placeholder="e.g. Multi-Tenant Canada, Default Multi-Tenant">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-internet">18. Internet Connectivity</label>
-              <input type="text" id="inst-internet" placeholder="e.g. LAN, Wi-Fi Backup, Optconnect">
-            </div>
-            <div class="form-group">
-              <label for="inst-it-survey">19. IT Site Survey</label>
-              <select id="inst-it-survey">
-                <option value="">Select...</option>
-                <option value="Attached">Attached</option>
-                <option value="Pending">Pending</option>
-                <option value="N/A">N/A</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-product-template">20. Product Template</label>
-              <input type="text" id="inst-product-template" placeholder="Insert template name or 'N/A'">
-            </div>
-            <div class="form-group">
-              <label for="inst-ui-previous">21. UI for Previous Deployments</label>
-              <input type="text" id="inst-ui-previous" placeholder="Insert link or 'N/A'">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="inst-ui-task">22. UI Task Link</label>
-              <input type="text" id="inst-ui-task" placeholder="Insert JIRA link or 'TBD'">
-            </div>
-            <div class="form-group">
-              <label for="inst-orientation">23. Orientation of the Vending/Locker</label>
-              <input type="text" id="inst-orientation" placeholder="Insert details or 'N/A'">
-            </div>
-          </div>
-          
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="inst-voltage">24. Voltage</label>
-              <input type="text" id="inst-voltage" placeholder="e.g. 110V, 220V">
-            </div>
-            <div class="form-group">
-              <label for="inst-plug-type">25. Plug Type</label>
-              <input type="text" id="inst-plug-type" placeholder="e.g. B, C, E, G">
-            </div>
-            <div class="form-group">
-              <label for="inst-poc">26. Point of Contact (POC)</label>
-              <input type="text" id="inst-poc" placeholder="Name(s), phone, email">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="inst-special-req">Special Requirements</label>
-            <textarea id="inst-special-req" placeholder="Insert any specific callouts: tradeshow, demo mode, replanogramming, training, remote support, new hardware, etc."></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="inst-scope">Scope of Work</label>
-            <textarea id="inst-scope" placeholder="Define the scope of work for this installation"></textarea>
-          </div>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Multi-Template Email Generator</h1>
+            <p>Create professional installation tickets, QA checklists, and UI requests with style</p>
         </div>
-        
-        <!-- QA Checklist Template -->
-        <div id="qa" class="template-section">
-          <h2 class="section-title">QA Checklist</h2>
-          
-          <div class="form-group">
-            <label for="qa-deployment-name">Deployment Name</label>
-            <input type="text" id="qa-deployment-name" placeholder="Enter deployment name">
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-sales-order">Sales Order</label>
-              <input type="text" id="qa-sales-order" placeholder="Sales order number">
-            </div>
-            <div class="form-group">
-              <label for="qa-shipping-date">Shipping Date</label>
-              <input type="date" id="qa-shipping-date">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-vinyl-date">Vinyl Date</label>
-              <input type="date" id="qa-vinyl-date">
-            </div>
-            <div class="form-group">
-              <label for="qa-naming">Naming</label>
-              <input type="text" id="qa-naming" placeholder="Naming convention">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="qa-address">Address</label>
-            <textarea id="qa-address" placeholder="Full address"></textarea>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-cp">Channel Partner (CP)</label>
-              <input type="text" id="qa-cp" placeholder="Channel partner">
-            </div>
-            <div class="form-group">
-              <label for="qa-cx">End Client (CX)</label>
-              <input type="text" id="qa-cx" placeholder="End client">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-kiosk-type">Kiosk Type</label>
-              <select id="qa-kiosk-type" class="kiosk-select">
-                <option value="">Select kiosk type...</option>
-              </select>
-              <div id="qa-kiosk-other" class="kiosk-other-field hidden">
-                <input type="text" id="qa-kiosk-other-text" placeholder="Specify other kiosk type">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="qa-elevator">Vending Unit Elevator</label>
-              <input type="text" id="qa-elevator" placeholder="Elevator type">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-screen-size">Screen Size</label>
-              <input type="text" id="qa-screen-size" placeholder="Screen size">
-            </div>
-            <div class="form-group">
-              <label for="qa-workflow">Workflow</label>
-              <input type="text" id="qa-workflow" placeholder="Workflow type">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-auth-payment">Authentication/Payment Device</label>
-              <input type="text" id="qa-auth-payment" placeholder="Authentication/Payment device">
-            </div>
-            <div class="form-group">
-              <label for="qa-payment-device">Payment Device</label>
-              <input type="text" id="qa-payment-device" placeholder="Payment device">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-language">Language</label>
-              <input type="text" id="qa-language" placeholder="Language">
-            </div>
-            <div class="form-group">
-              <label for="qa-ada-keypad">ADA Keypad</label>
-              <select id="qa-ada-keypad">
-                <option value="">Select...</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-hosting">Hosting</label>
-              <input type="text" id="qa-hosting" placeholder="Hosting environment">
-            </div>
-            <div class="form-group">
-              <label for="qa-internet">Internet Connectivity</label>
-              <input type="text" id="qa-internet" placeholder="Internet connectivity">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-it-survey">IT Site Survey</label>
-              <input type="text" id="qa-it-survey" placeholder="IT site survey status">
-            </div>
-            <div class="form-group">
-              <label for="qa-payment-config">Payment Device Configuration</label>
-              <input type="text" id="qa-payment-config" placeholder="Payment device configuration">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-product-template">Product Template</label>
-              <input type="text" id="qa-product-template" placeholder="Product template">
-            </div>
-            <div class="form-group">
-              <label for="qa-ui-previous">UI for Previous Deployments</label>
-              <input type="text" id="qa-ui-previous" placeholder="UI for previous deployments">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="qa-ui-task">UI Task Link</label>
-              <input type="text" id="qa-ui-task" placeholder="UI task link">
-            </div>
-            <div class="form-group">
-              <label for="qa-orientation">Orientation of the Vending/Locker</label>
-              <input type="text" id="qa-orientation" placeholder="Orientation details">
-            </div>
-          </div>
-          
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="qa-voltage">Voltage</label>
-              <input type="text" id="qa-voltage" placeholder="Voltage">
-            </div>
-            <div class="form-group">
-              <label for="qa-plug-type">Plug Type</label>
-              <input type="text" id="qa-plug-type" placeholder="Plug type">
-            </div>
-            <div class="form-group">
-              <label for="qa-special-req">Special Requirements</label>
-              <input type="text" id="qa-special-req" placeholder="Special requirements">
-            </div>
-          </div>
+
+        <div class="template-selector">
+            <label for="templateSelect">🎯 Choose Your Template:</label>
+            <select id="templateSelect">
+                <option value="installation">📋 Installation Ticket</option>
+                <option value="qa">✅ QA Checklist</option>
+                <option value="ui">🎨 UI Request</option>
+            </select>
         </div>
-        
-        <!-- UI Request Template -->
-        <div id="ui" class="template-section">
-          <h2 class="section-title">UI Request</h2>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-cp">CP</label>
-              <input type="text" id="ui-cp" placeholder="Channel Partner">
-            </div>
-            <div class="form-group">
-              <label for="ui-cx">CX</label>
-              <input type="text" id="ui-cx" placeholder="End Client">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-kiosk-type">Kiosk Type</label>
-              <select id="ui-kiosk-type" class="kiosk-select">
-                <option value="">Select kiosk type...</option>
-              </select>
-              <div id="ui-kiosk-other" class="kiosk-other-field hidden">
-                <input type="text" id="ui-kiosk-other-text" placeholder="Specify other kiosk type">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="ui-elevator">Vending Unit Elevator</label>
-              <input type="text" id="ui-elevator" placeholder="Enhanced ??">
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-screen-size">Screen Size</label>
-              <input type="text" id="ui-screen-size" placeholder="Screen size">
-            </div>
-            <div class="form-group">
-              <label>Smart Workflows</label>
-              <div class="checkbox-group">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ui-workflow-x" value="x">
-                  <label for="ui-workflow-x">Workflow X</label>
+
+        <div class="form-container">
+            <!-- Installation Ticket Form -->
+            <div id="installationForm" class="template-form active">
+                <div class="form-section">
+                    <h3><span class="section-icon icon-info">ℹ️</span>Basic Information<span class="template-badge badge-installation">Installation</span></h3>
+                    <div class="form-group">
+                        <label for="inst_clientEvent">Client / Event Name:</label>
+                        <input type="text" id="inst_clientEvent" name="inst_clientEvent" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_salesOrder">Sales Order (SO):</label>
+                            <input type="text" id="inst_salesOrder" name="inst_salesOrder" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_channelPartner">Channel Partner (CP):</label>
+                            <input type="text" id="inst_channelPartner" name="inst_channelPartner" placeholder="Direct" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_namingConvention">Naming Convention and Address:</label>
+                        <textarea id="inst_namingConvention" name="inst_namingConvention" placeholder="Kiosk ID(s) and full address, including building name if applicable" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_endClient">End Client (CX):</label>
+                        <input type="text" id="inst_endClient" name="inst_endClient" required>
+                    </div>
                 </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ui-workflow-y" value="y">
-                  <label for="ui-workflow-y">Workflow Y</label>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-tech">📅</span>Dates & Timeline</h3>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="inst_shippingDate">Shipping Date:</label>
+                            <input type="date" id="inst_shippingDate" name="inst_shippingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_deliveryDate">Delivery Date:</label>
+                            <input type="date" id="inst_deliveryDate" name="inst_deliveryDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_installationDate">Installation Date:</label>
+                            <input type="date" id="inst_installationDate" name="inst_installationDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_vinylDate">Vinyl Date:</label>
+                        <input type="date" id="inst_vinylDate" name="inst_vinylDate">
+                    </div>
                 </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="ui-workflow-z" value="z">
-                  <label for="ui-workflow-z">Workflow Z</label>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-config">⚙️</span>Technical Configuration</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_kioskType">Kiosk Type:</label>
+                            <select id="inst_kioskType" name="inst_kioskType" onchange="toggleOtherField('inst_kioskType','inst_kioskType_other')" required>
+                                <option value="">Select Kiosk Type</option>
+                                <option value="SparkXL">SparkXL</option>
+                                <option value="Spark Touch">Spark Touch</option>
+                                <option value="Retail Enclosure">Retail Enclosure</option>
+                                <option value="10'Smart Companion">10'Smart Companion</option>
+                                <option value="15'Smart Companion">15'Smart Companion</option>
+                                <option value="Control Locker">Control Locker</option>
+                                <option value="HDL Locker">HDL Locker</option>
+                                <option value="Stand Up Ted">Stand Up Ted</option>
+                                <option value="Sit-Down Ted">Sit-Down Ted</option>
+                                <option value="Smart Drawer">Smart Drawer</option>
+                                <option value="SK Dispenser">SK Dispenser</option>
+                                <option value="Wall-mount Kiosk">Wall-mount Kiosk</option>
+                                <option value="Key Locker">Key Locker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_kioskType_other" name="inst_kioskType_other" class="other-input" placeholder="Specify other kiosk type">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_vendingElevator">Vending Unit Elevator:</label>
+                            <input type="text" id="inst_vendingElevator" name="inst_vendingElevator" placeholder="N/A">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_screenSize">Screen Size:</label>
+                            <select id="inst_screenSize" name="inst_screenSize" onchange="toggleOtherField('inst_screenSize','inst_screenSize_other')" required>
+                                <option value="">Select Screen Size</option>
+                                <option value="10&quot;">10"</option>
+                                <option value="15&quot;">15"</option>
+                                <option value="32&quot;">32"</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_screenSize_other" name="inst_screenSize_other" class="other-input" placeholder="Specify other screen size">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_workflow">Workflow:</label>
+                            <select id="inst_workflow" name="inst_workflow" onchange="toggleOtherField('inst_workflow','inst_workflow_other')" required>
+                                <option value="">Select Workflow</option>
+                                <option value="ITSM Vending">ITSM Vending</option>
+                                <option value="Smart Workflow">Smart Workflow</option>
+                                <option value="GrabnGo">GrabnGo</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_workflow_other" name="inst_workflow_other" class="other-input" placeholder="Specify other workflow">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_authPayment">Authentication/Payment Device:</label>
+                            <select id="inst_authPayment" name="inst_authPayment" onchange="toggleOtherField('inst_authPayment','inst_authPayment_other')" required>
+                                <option value="">Select Device</option>
+                                <option value="Badge ID">Badge ID</option>
+                                <option value="Barcode Scanner">Barcode Scanner</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Free Vend">Free Vend</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_authPayment_other" name="inst_authPayment_other" class="other-input" placeholder="Specify other device">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_paymentConfig">Payment Device Configuration:</label>
+                            <input type="text" id="inst_paymentConfig" name="inst_paymentConfig" placeholder="N/A">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_language">Language:</label>
+                            <input type="text" id="inst_language" name="inst_language" value="English" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_adaKeypad">ADA Keypad:</label>
+                            <select id="inst_adaKeypad" name="inst_adaKeypad" required>
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_hosting">Hosting:</label>
+                            <select id="inst_hosting" name="inst_hosting" onchange="toggleOtherField('inst_hosting','inst_hosting_other')" required>
+                                <option value="">Select Hosting</option>
+                                <option value="Multi-Tenant Canada">Multi-Tenant Canada</option>
+                                <option value="Default Multi-Tenant">Default Multi-Tenant</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_hosting_other" name="inst_hosting_other" class="other-input" placeholder="Specify other hosting">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_internetConnectivity">Internet Connectivity:</label>
+                            <select id="inst_internetConnectivity" name="inst_internetConnectivity" onchange="toggleOtherField('inst_internetConnectivity','inst_internetConnectivity_other')" required>
+                                <option value="">Select Connectivity</option>
+                                <option value="LAN">LAN</option>
+                                <option value="Wi-Fi Backup">Wi-Fi Backup</option>
+                                <option value="Optconnect">Optconnect</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_internetConnectivity_other" name="inst_internetConnectivity_other" class="other-input" placeholder="Specify other connectivity">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_voltage">Voltage:</label>
+                            <select id="inst_voltage" name="inst_voltage" onchange="toggleOtherField('inst_voltage','inst_voltage_other')" required>
+                                <option value="">Select Voltage</option>
+                                <option value="110V">110V</option>
+                                <option value="220V">220V</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_voltage_other" name="inst_voltage_other" class="other-input" placeholder="Specify other voltage">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_plugType">Plug Type:</label>
+                            <select id="inst_plugType" name="inst_plugType" onchange="toggleOtherField('inst_plugType','inst_plugType_other')" required>
+                                <option value="">Select Plug Type</option>
+                                <option value="A">Type A</option>
+                                <option value="B">Type B</option>
+                                <option value="C">Type C</option>
+                                <option value="E">Type E</option>
+                                <option value="G">Type G</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="inst_plugType_other" name="inst_plugType_other" class="other-input" placeholder="Specify other plug type">
+                        </div>
+                    </div>
                 </div>
-              </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-contact">👥</span>Additional Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_itSiteSurvey">IT Site Survey:</label>
+                            <select id="inst_itSiteSurvey" name="inst_itSiteSurvey" required>
+                                <option value="">Select Status</option>
+                                <option value="Attached">Attached</option>
+                                <option value="Pending">Pending</option>
+                                <option value="N/A">N/A</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_productTemplate">Product Template:</label>
+                            <input type="text" id="inst_productTemplate" name="inst_productTemplate" placeholder="N/A">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inst_uiPrevious">UI for Previous Deployments:</label>
+                            <input type="url" id="inst_uiPrevious" name="inst_uiPrevious" placeholder="N/A">
+                        </div>
+                        <div class="form-group">
+                            <label for="inst_uiTaskLink">UI Task Link:</label>
+                            <input type="url" id="inst_uiTaskLink" name="inst_uiTaskLink" placeholder="TBD">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_orientation">Orientation of the Vending/Locker:</label>
+                        <input type="text" id="inst_orientation" name="inst_orientation" placeholder="N/A">
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_pointOfContact">Point of Contact (POC):</label>
+                        <textarea id="inst_pointOfContact" name="inst_pointOfContact" placeholder="Name(s), phone number(s), and email(s)" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-special">⭐</span>Special Requirements</h3>
+                    <div class="form-group">
+                        <label for="inst_specialRequirements">Special Requirements:</label>
+                        <textarea id="inst_specialRequirements" name="inst_specialRequirements" placeholder="Any specific callouts: tradeshow, demo mode, replanogramming, training, remote support, new hardware, etc."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="inst_scopeOfWork">Scope of Work:</label>
+                        <textarea id="inst_scopeOfWork" name="inst_scopeOfWork" placeholder="Detailed scope of work"></textarea>
+                    </div>
+                </div>
             </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-authentication">Authentication</label>
-              <input type="text" id="ui-authentication" placeholder="Authentication method">
+
+            <!-- QA Checklist Form -->
+            <div id="qaForm" class="template-form">
+                <div class="form-section">
+                    <h3><span class="section-icon icon-qa">✅</span>QA Checklist Information<span class="template-badge badge-qa">QA</span></h3>
+                    <div class="form-group">
+                        <label for="qa_deploymentName">Deployment Name:</label>
+                        <input type="text" id="qa_deploymentName" name="qa_deploymentName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_salesOrder">Sales Order:</label>
+                            <input type="text" id="qa_salesOrder" name="qa_salesOrder" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_shippingDate">Shipping Date:</label>
+                            <input type="date" id="qa_shippingDate" name="qa_shippingDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qa_vinylDate">Vinyl Date:</label>
+                        <input type="date" id="qa_vinylDate" name="qa_vinylDate">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-info">📍</span>Location & Client Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_naming">Naming:</label>
+                            <input type="text" id="qa_naming" name="qa_naming" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_address">Address:</label>
+                            <textarea id="qa_address" name="qa_address" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_channelPartner">Channel Partner (CP):</label>
+                            <input type="text" id="qa_channelPartner" name="qa_channelPartner" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_endClient">End Client (CX):</label>
+                            <input type="text" id="qa_endClient" name="qa_endClient" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-tech">🔧</span>Technical Specifications</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_kioskType">Kiosk Type:</label>
+                            <select id="qa_kioskType" name="qa_kioskType" onchange="toggleOtherField('qa_kioskType','qa_kioskType_other')" required>
+                                <option value="">Select Kiosk Type</option>
+                                <option value="SparkXL">SparkXL</option>
+                                <option value="Spark Touch">Spark Touch</option>
+                                <option value="Retail Enclosure">Retail Enclosure</option>
+                                <option value="10'Smart Companion">10'Smart Companion</option>
+                                <option value="15'Smart Companion">15'Smart Companion</option>
+                                <option value="Control Locker">Control Locker</option>
+                                <option value="HDL Locker">HDL Locker</option>
+                                <option value="Stand Up Ted">Stand Up Ted</option>
+                                <option value="Sit-Down Ted">Sit-Down Ted</option>
+                                <option value="Smart Drawer">Smart Drawer</option>
+                                <option value="SK Dispenser">SK Dispenser</option>
+                                <option value="Wall-mount Kiosk">Wall-mount Kiosk</option>
+                                <option value="Key Locker">Key Locker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_kioskType_other" name="qa_kioskType_other" class="other-input" placeholder="Specify other kiosk type">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_vendingElevator">Vending Unit Elevator:</label>
+                            <select id="qa_vendingElevator" name="qa_vendingElevator" onchange="toggleOtherField('qa_vendingElevator','qa_vendingElevator_other')" required>
+                                <option value="">Select Option</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Enhanced">Enhanced</option>
+                                <option value="N/A">N/A</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_vendingElevator_other" name="qa_vendingElevator_other" class="other-input" placeholder="Specify other elevator">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_screenSize">Screen Size:</label>
+                            <select id="qa_screenSize" name="qa_screenSize" onchange="toggleOtherField('qa_screenSize','qa_screenSize_other')" required>
+                                <option value="">Select Screen Size</option>
+                                <option value="10&quot;">10"</option>
+                                <option value="15&quot;">15"</option>
+                                <option value="32&quot;">32"</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_screenSize_other" name="qa_screenSize_other" class="other-input" placeholder="Specify other screen size">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_workflow">Workflow:</label>
+                            <select id="qa_workflow" name="qa_workflow" onchange="toggleOtherField('qa_workflow','qa_workflow_other')" required>
+                                <option value="">Select Workflow</option>
+                                <option value="ITSM Vending">ITSM Vending</option>
+                                <option value="Smart Workflow">Smart Workflow</option>
+                                <option value="GrabnGo">GrabnGo</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_workflow_other" name="qa_workflow_other" class="other-input" placeholder="Specify other workflow">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_authPayment">Authentication/Payment Device:</label>
+                            <select id="qa_authPayment" name="qa_authPayment" onchange="toggleOtherField('qa_authPayment','qa_authPayment_other')" required>
+                                <option value="">Select Device</option>
+                                <option value="Badge ID">Badge ID</option>
+                                <option value="Barcode Scanner">Barcode Scanner</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Free Vend">Free Vend</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_authPayment_other" name="qa_authPayment_other" class="other-input" placeholder="Specify other device">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_paymentDevice">Payment Device:</label>
+                            <input type="text" id="qa_paymentDevice" name="qa_paymentDevice">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_language">Language:</label>
+                            <input type="text" id="qa_language" name="qa_language" value="English">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_adaKeypad">ADA Keypad:</label>
+                            <select id="qa_adaKeypad" name="qa_adaKeypad" required>
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_hosting">Hosting:</label>
+                            <select id="qa_hosting" name="qa_hosting" onchange="toggleOtherField('qa_hosting','qa_hosting_other')" required>
+                                <option value="">Select Hosting</option>
+                                <option value="Multi-Tenant Canada">Multi-Tenant Canada</option>
+                                <option value="Default Multi-Tenant">Default Multi-Tenant</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_hosting_other" name="qa_hosting_other" class="other-input" placeholder="Specify other hosting">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_internetConnectivity">Internet Connectivity:</label>
+                            <select id="qa_internetConnectivity" name="qa_internetConnectivity" onchange="toggleOtherField('qa_internetConnectivity','qa_internetConnectivity_other')" required>
+                                <option value="">Select Connectivity</option>
+                                <option value="LAN">LAN</option>
+                                <option value="Wi-Fi Backup">Wi-Fi Backup</option>
+                                <option value="Optconnect">Optconnect</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_internetConnectivity_other" name="qa_internetConnectivity_other" class="other-input" placeholder="Specify other connectivity">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_voltage">Voltage:</label>
+                            <select id="qa_voltage" name="qa_voltage" onchange="toggleOtherField('qa_voltage','qa_voltage_other')" required>
+                                <option value="">Select Voltage</option>
+                                <option value="110V">110V</option>
+                                <option value="220V">220V</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_voltage_other" name="qa_voltage_other" class="other-input" placeholder="Specify other voltage">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_plugType">Plug Type:</label>
+                            <select id="qa_plugType" name="qa_plugType" onchange="toggleOtherField('qa_plugType','qa_plugType_other')" required>
+                                <option value="">Select Plug Type</option>
+                                <option value="A">Type A</option>
+                                <option value="B">Type B</option>
+                                <option value="C">Type C</option>
+                                <option value="E">Type E</option>
+                                <option value="G">Type G</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="qa_plugType_other" name="qa_plugType_other" class="other-input" placeholder="Specify other plug type">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-config">📋</span>Additional Configuration</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_itSiteSurvey">IT Site Survey:</label>
+                            <select id="qa_itSiteSurvey" name="qa_itSiteSurvey" required>
+                                <option value="">Select Status</option>
+                                <option value="Attached">Attached</option>
+                                <option value="Pending">Pending</option>
+                                <option value="N/A">N/A</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_paymentConfig">Payment Device Configuration:</label>
+                            <input type="text" id="qa_paymentConfig" name="qa_paymentConfig" placeholder="N/A">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_productTemplate">Product Template:</label>
+                            <input type="text" id="qa_productTemplate" name="qa_productTemplate" placeholder="N/A">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_uiPrevious">UI for Previous Deployments:</label>
+                            <input type="url" id="qa_uiPrevious" name="qa_uiPrevious" placeholder="N/A">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qa_uiTaskLink">UI Task Link:</label>
+                            <input type="url" id="qa_uiTaskLink" name="qa_uiTaskLink" placeholder="TBD">
+                        </div>
+                        <div class="form-group">
+                            <label for="qa_orientation">Orientation of the Vending/Locker:</label>
+                            <input type="text" id="qa_orientation" name="qa_orientation" placeholder="N/A">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qa_specialRequirements">Special Requirements:</label>
+                        <textarea id="qa_specialRequirements" name="qa_specialRequirements" placeholder="Any specific requirements or notes"></textarea>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="ui-payment-device">Payment Device</label>
-              <input type="text" id="ui-payment-device" placeholder="Payment device">
+
+            <!-- UI Request Form -->
+            <div id="uiForm" class="template-form">
+                <div class="form-section">
+                    <h3><span class="section-icon icon-ui">🎨</span>UI Request Details<span class="template-badge badge-ui">UI</span></h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ui_cp">Channel Partner (CP):</label>
+                            <input type="text" id="ui_cp" name="ui_cp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ui_cx">End Client (CX):</label>
+                            <input type="text" id="ui_cx" name="ui_cx" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ui_kioskType">Kiosk Type:</label>
+                            <select id="ui_kioskType" name="ui_kioskType" onchange="toggleOtherField('ui_kioskType','ui_kioskType_other')" required>
+                                <option value="">Select Kiosk Type</option>
+                                <option value="SparkXL">SparkXL</option>
+                                <option value="Spark Touch">Spark Touch</option>
+                                <option value="Retail Enclosure">Retail Enclosure</option>
+                                <option value="10'Smart Companion">10'Smart Companion</option>
+                                <option value="15'Smart Companion">15'Smart Companion</option>
+                                <option value="Control Locker">Control Locker</option>
+                                <option value="HDL Locker">HDL Locker</option>
+                                <option value="Stand Up Ted">Stand Up Ted</option>
+                                <option value="Sit-Down Ted">Sit-Down Ted</option>
+                                <option value="Smart Drawer">Smart Drawer</option>
+                                <option value="SK Dispenser">SK Dispenser</option>
+                                <option value="Wall-mount Kiosk">Wall-mount Kiosk</option>
+                                <option value="Key Locker">Key Locker</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="ui_kioskType_other" name="ui_kioskType_other" class="other-input" placeholder="Specify other kiosk type">
+                        </div>
+                        <div class="form-group">
+                            <label for="ui_vendingElevator">Vending Unit Elevator:</label>
+                            <select id="ui_vendingElevator" name="ui_vendingElevator" onchange="toggleOtherField('ui_vendingElevator','ui_vendingElevator_other')" required>
+                                <option value="">Select Option</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Enhanced">Enhanced</option>
+                                <option value="N/A">N/A</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="ui_vendingElevator_other" name="ui_vendingElevator_other" class="other-input" placeholder="Specify other elevator">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ui_screenSize">Screen Size:</label>
+                        <select id="ui_screenSize" name="ui_screenSize" onchange="toggleOtherField('ui_screenSize','ui_screenSize_other')" required>
+                            <option value="">Select Screen Size</option>
+                            <option value="10&quot;">10"</option>
+                            <option value="15&quot;">15"</option>
+                            <option value="32&quot;">32"</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="ui_screenSize_other" name="ui_screenSize_other" class="other-input" placeholder="Specify other screen size">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-config">⚙️</span>Workflow & Authentication</h3>
+                    <div class="form-group">
+                        <label>Smart Workflows:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_workflow_itsm" name="ui_workflows" value="ITSM Vending">
+                                <label for="ui_workflow_itsm">ITSM Vending</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_workflow_smart" name="ui_workflows" value="Smart Workflow">
+                                <label for="ui_workflow_smart">Smart Workflow</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_workflow_grabngo" name="ui_workflows" value="GrabnGo">
+                                <label for="ui_workflow_grabngo">GrabnGo</label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="ui_workflowOther">Other Workflows:</label>
+                            <input type="text" id="ui_workflowOther" name="ui_workflowOther" placeholder="Specify other workflows">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ui_authentication">Authentication:</label>
+                            <select id="ui_authentication" name="ui_authentication" onchange="toggleOtherField('ui_authentication','ui_authentication_other')" required>
+                                <option value="">Select Authentication</option>
+                                <option value="Badge ID">Badge ID</option>
+                                <option value="Barcode Scanner">Barcode Scanner</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Free Vend">Free Vend</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="ui_authentication_other" name="ui_authentication_other" class="other-input" placeholder="Specify other authentication">
+                        </div>
+                        <div class="form-group">
+                            <label for="ui_paymentDevice">Payment Device:</label>
+                            <input type="text" id="ui_paymentDevice" name="ui_paymentDevice">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-info">🌐</span>Language & Accessibility</h3>
+                    <div class="form-group">
+                        <label>Languages:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_lang_english" name="ui_languages" value="English" checked>
+                                <label for="ui_lang_english">English (Default)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_lang_spanish" name="ui_languages" value="Spanish">
+                                <label for="ui_lang_spanish">Spanish</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_lang_french" name="ui_languages" value="French">
+                                <label for="ui_lang_french">French</label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="ui_languageOther">Other Languages:</label>
+                            <input type="text" id="ui_languageOther" name="ui_languageOther" placeholder="Specify other languages">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ui_adaKeypad">ADA Keypad:</label>
+                            <select id="ui_adaKeypad" name="ui_adaKeypad" required>
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ui_apiIntegration">API Integration:</label>
+                            <select id="ui_apiIntegration" name="ui_apiIntegration" required>
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-tech">🖥️</span>Hosting & Technical</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ui_hosting">Hosting:</label>
+                            <select id="ui_hosting" name="ui_hosting" onchange="toggleOtherField('ui_hosting','ui_hosting_other')" required>
+                                <option value="">Select Hosting</option>
+                                <option value="Multi-Tenant Canada">Multi-Tenant Canada</option>
+                                <option value="Default Multi-Tenant">Default Multi-Tenant</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="ui_hosting_other" name="ui_hosting_other" class="other-input" placeholder="Specify other hosting">
+                        </div>
+                        <div class="form-group">
+                            <label for="ui_visionUrl">Vision URL:</label>
+                            <input type="url" id="ui_visionUrl" name="ui_visionUrl" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ui_attachments">Attachments:</label>
+                        <textarea id="ui_attachments" name="ui_attachments" placeholder="List any attachments or files provided"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><span class="section-icon icon-special">🎨</span>Branding & Documentation</h3>
+                    <div class="form-group">
+                        <label>Branding Documents Available:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_brand_logo" name="ui_branding" value="Logo">
+                                <label for="ui_brand_logo">Logo</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_brand_fonts" name="ui_branding" value="Fonts">
+                                <label for="ui_brand_fonts">Fonts</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ui_brand_colors" name="ui_branding" value="Color Codes">
+                                <label for="ui_brand_colors">Color Codes</label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="ui_brandingOther">Other Branding Materials:</label>
+                            <textarea id="ui_brandingOther" name="ui_brandingOther" placeholder="List any other branding materials provided by client"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ui_sow">SOW (Scope of Work):</label>
+                        <textarea id="ui_sow" name="ui_sow" placeholder="Detailed scope of work for UI requirements"></textarea>
+                    </div>
+                </div>
             </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Language</label>
-            <div class="checkbox-group">
-              <div class="checkbox-item">
-                <input type="checkbox" id="ui-lang-english" value="English" checked>
-                <label for="ui-lang-english">English (Default)</label>
-              </div>
-              <div class="checkbox-item">
-                <input type="checkbox" id="ui-lang-x" value="Language X">
-                <label for="ui-lang-x">Language X</label>
-              </div>
-              <div class="checkbox-item">
-                <input type="checkbox" id="ui-lang-y" value="Language Y">
-                <label for="ui-lang-y">Language Y</label>
-              </div>
-              <div class="checkbox-item">
-                <input type="checkbox" id="ui-lang-z" value="Language Z">
-                <label for="ui-lang-z">Language Z</label>
-              </div>
+
+            <div class="button-group">
+                <button type="button" id="generateBtn" class="btn btn-primary">🚀 Generate Email</button>
+                <button type="button" id="clearBtn" class="btn btn-secondary">🗑️ Clear Form</button>
             </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-ada-keypad">ADA Keypad</label>
-              <select id="ui-ada-keypad">
-                <option value="">Select...</option>
-                <option value="Yes">YES</option>
-                <option value="No">NO</option>
-              </select>
+
+            <div id="emailPreview" class="email-preview">
+                <h3>📧 Generated Email Content</h3>
+                <div id="emailContent" class="email-content"></div>
+                <button id="copyBtn" class="btn copy-btn">📋 Copy to Clipboard</button>
+                <div id="successMessage" class="success-message">✅ Email content copied to clipboard!</div>
             </div>
-            <div class="form-group">
-              <label for="ui-api-integration">API Integration</label>
-              <select id="ui-api-integration">
-                <option value="">Select...</option>
-                <option value="Yes">YES</option>
-                <option value="No">NO</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="ui-hosting">Hosting</label>
-              <input type="text" id="ui-hosting" placeholder="Hosting environment">
-            </div>
-            <div class="form-group">
-              <label for="ui-vision-url">Vision URL</label>
-              <input type="text" id="ui-vision-url" placeholder="Vision URL">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="ui-attachments">Attachments</label>
-            <textarea id="ui-attachments" placeholder="List attachments or file references"></textarea>
-          </div>
-          
-          <div class="subsection">
-            <h4>Branding Documents</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="ui-logo">Logo</label>
-                <input type="text" id="ui-logo" placeholder="Logo file or reference">
-              </div>
-              <div class="form-group">
-                <label for="ui-fonts">Fonts</label>
-                <input type="text" id="ui-fonts" placeholder="Font specifications">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="ui-color-codes">Color Codes</label>
-              <input type="text" id="ui-color-codes" placeholder="Color codes and specifications">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="ui-sow">SOW</label>
-            <textarea id="ui-sow" placeholder="Statement of Work details"></textarea>
-          </div>
         </div>
-        
-        <!-- UAT Checklist Template -->
-        <div id="uat" class="template-section">
-          <h2 class="section-title">UAT Checklist Generator</h2>
-          
-          <div class="uat-header-fields">
-            <h3>Project Information</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-pm">Project Manager</label>
-                <input type="text" id="uat-pm" placeholder="Project Manager name">
-              </div>
-              <div class="form-group">
-                <label for="uat-so">SO</label>
-                <input type="text" id="uat-so" placeholder="SO number">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-customer">Customer / Channel</label>
-                <input type="text" id="uat-customer" placeholder="Customer or channel name">
-              </div>
-              <div class="form-group">
-                <label for="uat-form-factor">Form Factor</label>
-                <input type="text" id="uat-form-factor" placeholder="Form factor">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-naming">Naming Convention</label>
-                <input type="text" id="uat-naming" placeholder="Naming convention">
-              </div>
-              <div class="form-group">
-                <label for="uat-qaqc">QA/QC by</label>
-                <input type="text" id="uat-qaqc" placeholder="QA/QC person">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-date-completed">Date Completed</label>
-                <input type="date" id="uat-date-completed">
-              </div>
-              <div class="form-group">
-                <label for="uat-shipping-date">Shipping Date</label>
-                <input type="date" id="uat-shipping-date">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="uat-shipping-address">Shipping Address</label>
-              <textarea id="uat-shipping-address" placeholder="Full shipping address" rows="3"></textarea>
-            </div>
-            
-            <h4>Configuration Details</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-special-hw">Special HW</label>
-                <input type="text" id="uat-special-hw" placeholder="Special hardware">
-              </div>
-              <div class="form-group">
-                <label for="uat-front-camera">Front Camera</label>
-                <input type="text" id="uat-front-camera" placeholder="Front camera details">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-internet">Internet Connectivity</label>
-                <input type="text" id="uat-internet" placeholder="Internet connectivity">
-              </div>
-              <div class="form-group">
-                <label for="uat-badge-reader">Badge Reader</label>
-                <input type="text" id="uat-badge-reader" placeholder="Badge reader details">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-receipt-printer">Receipt Printer</label>
-                <input type="text" id="uat-receipt-printer" placeholder="Receipt printer details">
-              </div>
-              <div class="form-group">
-                <label for="uat-payment-method">Payment Method</label>
-                <input type="text" id="uat-payment-method" placeholder="Payment method">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-ui-language">UI Language</label>
-                <input type="text" id="uat-ui-language" placeholder="UI language">
-              </div>
-              <div class="form-group">
-                <label for="uat-keyboard">Keyboard</label>
-                <input type="text" id="uat-keyboard" placeholder="Keyboard details">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-serial-no">Serial No.</label>
-                <input type="text" id="uat-serial-no" placeholder="Serial number">
-              </div>
-              <div class="form-group">
-                <label for="uat-crate-white-glove">Crate/White Glove</label>
-                <input type="text" id="uat-crate-white-glove" placeholder="Crate/White Glove details">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-power-plug-type">Power / Plug Type</label>
-                <input type="text" id="uat-power-plug-type" placeholder="Power/Plug type">
-              </div>
-              <div class="form-group">
-                <label for="uat-plug-picture">Plug Picture</label>
-                <input type="text" id="uat-plug-picture" placeholder="Plug picture reference">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="uat-power-data">Power and Data</label>
-                <input type="text" id="uat-power-data" placeholder="Power and data details">
-              </div>
-              <div class="form-group">
-                <label for="uat-key-quantity">Key Quantity</label>
-                <input type="text" id="uat-key-quantity" placeholder="Key quantity">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="uat-key-serial">Key Serial No.</label>
-              <input type="text" id="uat-key-serial" placeholder="Key serial number">
-            </div>
-          </div>
-          
-          <h3>Checklist Items</h3>
-          <div class="uat-checklist-container" id="uat-checklist-items">
-            <!-- Checklist items will be populated by JavaScript -->
-          </div>
-          
-          <div class="button-group">
-            <button class="btn btn-success" id="download-uat-excel">Download UAT Excel</button>
-          </div>
-        </div>
-        
-        <div class="button-group">
-          <button class="btn btn-primary" id="generate-btn">Generate</button>
-          <button class="btn btn-secondary" id="clear-btn">Clear</button>
-          <button class="btn btn-secondary" id="copy-btn">Copy Output</button>
-        </div>
-      </div>
-      
-      <div class="output-section">
-        <h2 class="section-title">Output Preview</h2>
-        <div class="output-area" id="output-area"></div>
-      </div>
     </div>
-  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script>
-    // Kiosk types list
-    const KIOSK_TYPES = [
-      "Linq (K1)", "Linq MINI (K2)", "Linq XL (K3)", "Linq+ (K4)",
-      "Linq Locker", "Linq Tower", "Linq Wall", "Linq Locker Pro",
-      "Linq Locker Mini", "Linq Smart Vending", "Linq Fridge", "Linq Freezer",
-      "Linq Return Bin", "Linq Pickup Station", "Linq Parcel", "Linq Parcel XL",
-      "Linq Parcel Pro", "Linq VLM (Vertical Lift Module)", "Linq Robotic",
-      "Linq Cashierless", "Linq Dispense Station", "Linq Custom"
-    ];
-
-    // UAT Checklist items from Excel
-    const UAT_CHECKLIST_ITEMS = [
-      { sn: 1, description: "Without physical damage" },
-      { sn: 2, description: "Vinyl correctly done with no scratches (compare with vinyl rendering)" },
-      { sn: 3, description: "Internal and external camera display correctly" },
-      { sn: 4, description: "Badge reader reads all provided badges" },
-      { sn: 5, description: "Barcode reader reads different types of barcodes" },
-      { sn: 6, description: "Door opens without hinderance" },
-      { sn: 7, description: "Two Keys functioning well" },
-      { sn: 8, description: "Side screen displaying correct media (If applicable)" },
-      { sn: 9, description: "Email receipt is correct (Formating and content)" },
-      { sn: 10, description: "Receipt printer prints correctly (If applicable)" },
-      { sn: 11, description: "All additional external peripherals packed (If applicable)" },
-      { sn: 12, description: "Product correctly displayed on production UI" },
-      { sn: 13, description: "Planogram consistent with final approved planogram template" },
-      { sn: 14, description: "All products dispense successfully" },
-      { sn: 15, description: "Payment device accepts both debit and credit card (if applicable)" },
-      { sn: 16, description: "Double-check that the right payment device is installed for the shipping location" },
-      { sn: 17, description: "Elevator hatch opens after dispensing all products" },
-      { sn: 18, description: "Client approved UI design" },
-      { sn: 19, description: "Vinyl on elevator hatch should look good and align with the vinyl on rest of the machine" },
-      { sn: 20, description: "Touchscreen Responsive" },
-      { sn: 21, description: "Special Requirements:" }
-    ];
-
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeKioskSelects();
-      initializeUATChecklist();
-      initializeEventListeners();
-    });
-
-    function initializeKioskSelects() {
-      const kioskSelects = document.querySelectorAll('.kiosk-select');
-      kioskSelects.forEach(select => {
-        KIOSK_TYPES.forEach(type => {
-          const option = document.createElement('option');
-          option.value = type;
-          option.textContent = type;
-          select.appendChild(option);
+    <script>
+        // Template switching
+        document.getElementById('templateSelect').addEventListener('change', function() {
+            const selectedTemplate = this.value;
+            document.querySelectorAll('.template-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(selectedTemplate + 'Form').classList.add('active');
+            document.getElementById('emailPreview').style.display = 'none';
         });
-        
-        // Add "Other" option
-        const otherOption = document.createElement('option');
-        otherOption.value = 'Other';
-        otherOption.textContent = 'Other (specify)';
-        select.appendChild(otherOption);
-        
-        // Handle "Other" selection
-        select.addEventListener('change', function() {
-          const otherId = select.id + '-other';
-          const otherField = document.getElementById(otherId);
-          if (otherField) {
-            if (select.value === 'Other') {
-              otherField.classList.remove('hidden');
-            } else {
-              otherField.classList.add('hidden');
+
+        // Generate email button
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const activeTemplate = document.querySelector('.template-form.active').id;
+            switch(activeTemplate) {
+                case 'installationForm': generateInstallationEmail(); break;
+                case 'qaForm': generateQAEmail(); break;
+                case 'uiForm': generateUIEmail(); break;
             }
-          }
         });
-      });
-    }
 
-    function initializeUATChecklist() {
-      const container = document.getElementById('uat-checklist-items');
-      UAT_CHECKLIST_ITEMS.forEach(item => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'checklist-item';
-        itemDiv.innerHTML = `
-          <input type="checkbox" class="checklist-checkbox" id="uat-item-${item.sn}" data-sn="${item.sn}">
-          <label for="uat-item-${item.sn}" class="checklist-description">${item.sn}. ${item.description}</label>
-          <input type="text" class="checklist-remarks" placeholder="Remarks" id="uat-remarks-${item.sn}">
-        `;
-        container.appendChild(itemDiv);
-      });
-    }
-
-    function initializeEventListeners() {
-      // Template switching
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', function() {
-          const template = this.dataset.template;
-          switchTemplate(template);
+        // Clear form button
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            const activeForm = document.querySelector('.template-form.active');
+            const inputs = activeForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') input.checked = false; else input.value = '';
+                localStorage.removeItem(`form_${input.name}`);
+                if (input.classList.contains('other-input')) input.style.display = 'none';
+            });
+            document.getElementById('emailPreview').style.display = 'none';
         });
-      });
 
-      // Generate button
-      document.getElementById('generate-btn').addEventListener('click', generateOutput);
-      
-      // Clear button
-      document.getElementById('clear-btn').addEventListener('click', clearCurrentTemplate);
-      
-      // Copy button
-      document.getElementById('copy-btn').addEventListener('click', copyOutput);
-      
-      // Download UAT Excel button
-      document.getElementById('download-uat-excel').addEventListener('click', downloadUATExcel);
-    }
+        // Copy to clipboard
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const emailContent = document.getElementById('emailContent').textContent;
+            navigator.clipboard.writeText(emailContent).then(function() {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                setTimeout(() => { successMessage.style.display = 'none'; }, 3000);
+            }).catch(function() { alert('Failed to copy to clipboard. Please select and copy manually.'); });
+        });
 
-    function switchTemplate(templateName) {
-      // Update tab buttons
-      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`[data-template="${templateName}"]`).classList.add('active');
-      
-      // Update template sections
-      document.querySelectorAll('.template-section').forEach(section => section.classList.remove('active'));
-      document.getElementById(templateName).classList.add('active');
-      
-      // Clear output
-      document.getElementById('output-area').textContent = '';
-    }
-
-    function generateOutput() {
-      const activeTemplate = document.querySelector('.template-section.active').id;
-      let output = '';
-      
-      switch(activeTemplate) {
-        case 'installation':
-          output = generateInstallationOutput();
-          break;
-        case 'qa':
-          output = generateQAOutput();
-          break;
-        case 'ui':
-          output = generateUIOutput();
-          break;
-        case 'uat':
-          output = 'Use "Download UAT Excel" button to generate the UAT checklist Excel file.';
-          break;
-      }
-      
-      document.getElementById('output-area').textContent = output;
-    }
-
-    function generateInstallationOutput() {
-      const clientEvent = document.getElementById('inst-client-event').value || '[Client / Event Name Here]';
-      
-      let output = `Installation Ticket – ${clientEvent}\n\n`;
-      
-      output += `1. Sales Order (SO): ${document.getElementById('inst-so').value || '[Insert SO number]'}\n`;
-      output += `2. Naming Convention and Address: ${document.getElementById('inst-naming').value || '[Insert Kiosk ID(s)]'}\n`;
-      output += `   ${document.getElementById('inst-address').value || '[Insert full address, including building name if applicable]'}\n`;
-      output += `3. Channel Partner (CP): ${document.getElementById('inst-cp').value || '[Insert Channel Partner or "Direct"]'}\n`;
-      output += `4. End Client (CX): ${document.getElementById('inst-cx').value || '[Insert End Client name]'}\n`;
-      output += `5. Shipping Date: ${document.getElementById('inst-shipping-date').value || '[Insert shipping date]'}\n`;
-      output += `6. Delivery Date: ${document.getElementById('inst-delivery-date').value || '[Insert delivery date]'}\n`;
-      output += `7. Requested Installation Date: ${document.getElementById('inst-install-date').value || '[Insert installation date]'}\n`;
-      output += `8. Vinyl Date: ${document.getElementById('inst-vinyl-date').value || '[Insert vinyl application date or "N/A"]'}\n`;
-      output += `9. Kiosk Type: ${getKioskValue('inst-kiosk-type', 'inst-kiosk-other-text') || '[Insert kiosk type]'}\n`;
-      output += `10. Vending Unit Elevator: ${document.getElementById('inst-elevator').value || '[Insert elevator type or "N/A"]'}\n`;
-      output += `11. Screen Size: ${document.getElementById('inst-screen-size').value || '[Insert screen size]'}\n`;
-      output += `12. Workflow: ${document.getElementById('inst-workflow').value || '[Insert workflow type]'}\n`;
-      output += `13. Authentication/Payment Device: ${document.getElementById('inst-auth-payment').value || '[Insert type]'}\n`;
-      output += `14. Payment Device Configuration: ${document.getElementById('inst-payment-config').value || '[Insert configuration details or "N/A"]'}\n`;
-      output += `15. Language: ${document.getElementById('inst-language').value || '[Insert supported language(s)]'}\n`;
-      output += `16. ADA Keypad: ${document.getElementById('inst-ada-keypad').value || '[Yes / No]'}\n`;
-      output += `17. Hosting: ${document.getElementById('inst-hosting').value || '[Insert hosting environment]'}\n`;
-      output += `18. Internet Connectivity: ${document.getElementById('inst-internet').value || '[Insert method]'}\n`;
-      output += `19. IT Site Survey: ${document.getElementById('inst-it-survey').value || '[Insert "Attached", "Pending", or "N/A"]'}\n`;
-      output += `20. Product Template: ${document.getElementById('inst-product-template').value || '[Insert template name or "N/A"]'}\n`;
-      output += `21. UI for Previous Deployments: ${document.getElementById('inst-ui-previous').value || '[Insert link or "N/A"]'}\n`;
-      output += `22. UI Task Link: ${document.getElementById('inst-ui-task').value || '[Insert JIRA link or "TBD"]'}\n`;
-      output += `23. Orientation of the Vending/Locker: ${document.getElementById('inst-orientation').value || '[Insert details or "N/A"]'}\n`;
-      output += `24. Voltage: ${document.getElementById('inst-voltage').value || '[Insert voltage]'}\n`;
-      output += `25. Plug Type: ${document.getElementById('inst-plug-type').value || '[Insert plug type]'}\n`;
-      output += `26. Point of Contact (POC): ${document.getElementById('inst-poc').value || '[Insert name(s), phone number(s), and email(s)]'}\n\n`;
-      
-      output += `Special Requirements:\n${document.getElementById('inst-special-req').value || '[Insert any specific callouts]'}\n\n`;
-      output += `Scope of Work:\n${document.getElementById('inst-scope').value || '[Define scope of work]'}`;
-      
-      return output;
-    }
-
-    function generateQAOutput() {
-      const deploymentName = document.getElementById('qa-deployment-name').value || '[Deployment Name]';
-      
-      let output = `QA Checklist – ${deploymentName}\n\n`;
-      
-      output += `Sales Order: ${document.getElementById('qa-sales-order').value || ''}\n`;
-      output += `Shipping Date: ${document.getElementById('qa-shipping-date').value || ''}\n`;
-      output += `Vinyl Date: ${document.getElementById('qa-vinyl-date').value || ''}\n\n`;
-      
-      output += `Naming Convention and Address:\n`;
-      output += `Naming: ${document.getElementById('qa-naming').value || ''}\n`;
-      output += `Address: ${document.getElementById('qa-address').value || ''}\n\n`;
-      
-      output += `Channel Partner (CP): ${document.getElementById('qa-cp').value || ''}\n`;
-      output += `End Client (CX): ${document.getElementById('qa-cx').value || ''}\n\n`;
-      
-      output += `Kiosk Type: ${getKioskValue('qa-kiosk-type', 'qa-kiosk-other-text') || ''}\n`;
-      output += `Vending Unit Elevator: ${document.getElementById('qa-elevator').value || ''}\n`;
-      output += `Screen Size: ${document.getElementById('qa-screen-size').value || ''}\n`;
-      output += `Workflow: ${document.getElementById('qa-workflow').value || ''}\n\n`;
-      
-      output += `Authentication/Payment Device: ${document.getElementById('qa-auth-payment').value || ''}\n`;
-      output += `Payment Device: ${document.getElementById('qa-payment-device').value || ''}\n`;
-      output += `Language: ${document.getElementById('qa-language').value || ''}\n`;
-      output += `ADA Keypad: ${document.getElementById('qa-ada-keypad').value || ''}\n\n`;
-      
-      output += `Hosting: ${document.getElementById('qa-hosting').value || ''}\n`;
-      output += `Internet Connectivity: ${document.getElementById('qa-internet').value || ''}\n`;
-      output += `IT Site Survey: ${document.getElementById('qa-it-survey').value || ''}\n`;
-      output += `Payment Device Configuration: ${document.getElementById('qa-payment-config').value || ''}\n\n`;
-      
-      output += `Product Template: ${document.getElementById('qa-product-template').value || ''}\n`;
-      output += `UI for Previous Deployments: ${document.getElementById('qa-ui-previous').value || ''}\n`;
-      output += `UI Task Link: ${document.getElementById('qa-ui-task').value || ''}\n\n`;
-      
-      output += `Orientation of the Vending/Locker: ${document.getElementById('qa-orientation').value || ''}\n`;
-      output += `Voltage: ${document.getElementById('qa-voltage').value || ''}\n`;
-      output += `Plug Type: ${document.getElementById('qa-plug-type').value || ''}\n\n`;
-      
-      output += `Special Requirements: ${document.getElementById('qa-special-req').value || ''}`;
-      
-      return output;
-    }
-
-    function generateUIOutput() {
-      let output = `UI Request\n\n`;
-      
-      output += `CP: ${document.getElementById('ui-cp').value || '-'}\n`;
-      output += `CX: ${document.getElementById('ui-cx').value || '-'}\n`;
-      output += `Kiosk Type: ${getKioskValue('ui-kiosk-type', 'ui-kiosk-other-text') || '-'}\n`;
-      output += `Vending Unit Elevator: ${document.getElementById('ui-elevator').value || 'Enhanced ??'}\n`;
-      output += `Screen Size: ${document.getElementById('ui-screen-size').value || '-'}\n\n`;
-      
-      // Smart Workflows
-      const workflows = [];
-      if (document.getElementById('ui-workflow-x').checked) workflows.push('x');
-      if (document.getElementById('ui-workflow-y').checked) workflows.push('y');
-      if (document.getElementById('ui-workflow-z').checked) workflows.push('z');
-      output += `Smart Workflows: ${workflows.length > 0 ? workflows.join(', ') : '-'}\n\n`;
-      
-      output += `Authentication: ${document.getElementById('ui-authentication').value || '-'}\n`;
-      output += `Payment Device: ${document.getElementById('ui-payment-device').value || '-'}\n\n`;
-      
-      // Languages
-      const languages = [];
-      if (document.getElementById('ui-lang-english').checked) languages.push('English (Default)');
-      if (document.getElementById('ui-lang-x').checked) languages.push('Language X');
-      if (document.getElementById('ui-lang-y').checked) languages.push('Language Y');
-      if (document.getElementById('ui-lang-z').checked) languages.push('Language Z');
-      output += `Language: ${languages.length > 0 ? languages.join(', ') : 'English (Default)'}\n\n`;
-      
-      output += `ADA Keypad: ${document.getElementById('ui-ada-keypad').value || 'YES / NO ??'}\n`;
-      output += `API Integration: ${document.getElementById('ui-api-integration').value || 'YES / NO ??'}\n`;
-      output += `Hosting: ${document.getElementById('ui-hosting').value || '-'}\n`;
-      output += `Vision URL: ${document.getElementById('ui-vision-url').value || '-'}\n\n`;
-      
-      output += `Attachments: ${document.getElementById('ui-attachments').value || '-'}\n\n`;
-      
-      output += `Branding Documents:\n`;
-      output += `Logo: ${document.getElementById('ui-logo').value || '-'}\n`;
-      output += `Fonts: ${document.getElementById('ui-fonts').value || '-'}\n`;
-      output += `Color Codes: ${document.getElementById('ui-color-codes').value || '-'}\n\n`;
-      
-      output += `SOW: ${document.getElementById('ui-sow').value || '-'}`;
-      
-      return output;
-    }
-
-    function getKioskValue(selectId, otherInputId) {
-      const select = document.getElementById(selectId);
-      const otherInput = document.getElementById(otherInputId);
-      
-      if (select.value === 'Other' && otherInput && otherInput.value) {
-        return otherInput.value;
-      }
-      return select.value;
-    }
-
-    function clearCurrentTemplate() {
-      const activeTemplate = document.querySelector('.template-section.active');
-      const inputs = activeTemplate.querySelectorAll('input, textarea, select');
-      
-      inputs.forEach(input => {
-        if (input.type === 'checkbox') {
-          if (input.id === 'ui-lang-english') {
-            input.checked = true; // Keep English checked by default
-          } else {
-            input.checked = false;
-          }
-        } else {
-          input.value = '';
+        // Helper: Date formatting
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
         }
-      });
-      
-      // Hide other fields
-      activeTemplate.querySelectorAll('.kiosk-other-field').forEach(field => {
-        field.classList.add('hidden');
-      });
-      
-      document.getElementById('output-area').textContent = '';
-    }
 
-    function copyOutput() {
-      const output = document.getElementById('output-area').textContent;
-      if (output) {
-        navigator.clipboard.writeText(output).then(() => {
-          showToast('Output copied to clipboard!');
-        }).catch(() => {
-          showToast('Failed to copy. Please select and copy manually.', 'error');
+        // Helper: display email
+        function displayEmail(content) {
+            document.getElementById('emailContent').textContent = content;
+            document.getElementById('emailPreview').style.display = 'block';
+            document.getElementById('emailPreview').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Toggle Other input visibility
+        function toggleOtherField(selectId, otherInputId) {
+            const select = document.getElementById(selectId);
+            const otherInput = document.getElementById(otherInputId);
+            if (select && otherInput) {
+                if (select.value === 'Other') {
+                    otherInput.style.display = 'block';
+                } else {
+                    otherInput.style.display = 'none';
+                    otherInput.value = '';
+                }
+            }
+        }
+
+        // Generate Installation Email
+        function generateInstallationEmail() {
+            const form = document.getElementById('installationForm');
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) { data[key] = value || 'N/A'; }
+
+            // apply Other overrides
+            if (data.inst_kioskType === 'Other' && data.inst_kioskType_other) data.inst_kioskType = data.inst_kioskType_other;
+            if (data.inst_screenSize === 'Other' && data.inst_screenSize_other) data.inst_screenSize = data.inst_screenSize_other;
+            if (data.inst_workflow === 'Other' && data.inst_workflow_other) data.inst_workflow = data.inst_workflow_other;
+            if (data.inst_authPayment === 'Other' && data.inst_authPayment_other) data.inst_authPayment = data.inst_authPayment_other;
+            if (data.inst_hosting === 'Other' && data.inst_hosting_other) data.inst_hosting = data.inst_hosting_other;
+            if (data.inst_internetConnectivity === 'Other' && data.inst_internetConnectivity_other) data.inst_internetConnectivity = data.inst_internetConnectivity_other;
+            if (data.inst_voltage === 'Other' && data.inst_voltage_other) data.inst_voltage = data.inst_voltage_other;
+            if (data.inst_plugType === 'Other' && data.inst_plugType_other) data.inst_plugType = data.inst_plugType_other;
+
+            // dates
+            if (data.inst_shippingDate) data.inst_shippingDate = formatDate(data.inst_shippingDate);
+            if (data.inst_deliveryDate) data.inst_deliveryDate = formatDate(data.inst_deliveryDate);
+            if (data.inst_installationDate) data.inst_installationDate = formatDate(data.inst_installationDate);
+            if (data.inst_vinylDate) data.inst_vinylDate = formatDate(data.inst_vinylDate);
+
+            const emailContent = `Subject: Installation Ticket – ${data.inst_clientEvent}
+
+Installation Ticket – ${data.inst_clientEvent}
+
+1. Sales Order (SO): ${data.inst_salesOrder}
+2. Naming Convention and Address: ${data.inst_namingConvention}
+3. Channel Partner (CP): ${data.inst_channelPartner}
+4. End Client (CX): ${data.inst_endClient}
+5. Shipping Date: ${data.inst_shippingDate}
+6. Delivery Date: ${data.inst_deliveryDate}
+7. Requested Installation Date: ${data.inst_installationDate}
+8. Vinyl Date: ${data.inst_vinylDate}
+9. Kiosk Type: ${data.inst_kioskType}
+10. Vending Unit Elevator: ${data.inst_vendingElevator}
+11. Screen Size: ${data.inst_screenSize}
+12. Workflow: ${data.inst_workflow}
+13. Authentication/Payment Device: ${data.inst_authPayment}
+14. Payment Device Configuration: ${data.inst_paymentConfig}
+15. Language: ${data.inst_language}
+16. ADA Keypad: ${data.inst_adaKeypad}
+17. Hosting: ${data.inst_hosting}
+18. Internet Connectivity: ${data.inst_internetConnectivity}
+19. IT Site Survey: ${data.inst_itSiteSurvey}
+20. Product Template: ${data.inst_productTemplate}
+21. UI for Previous Deployments: ${data.inst_uiPrevious}
+22. UI Task Link: ${data.inst_uiTaskLink}
+23. Orientation of the Vending/Locker: ${data.inst_orientation}
+24. Voltage: ${data.inst_voltage}
+25. Plug Type: ${data.inst_plugType}
+26. Point of Contact (POC): ${data.inst_pointOfContact}
+
+Special Requirements: ${data.inst_specialRequirements}
+
+Scope of Work: ${data.inst_scopeOfWork}`;
+            displayEmail(emailContent);
+        }
+
+        // Generate QA Email
+        function generateQAEmail() {
+            const form = document.getElementById('qaForm');
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) { data[key] = value || 'N/A'; }
+
+            // apply Other overrides
+            if (data.qa_kioskType === 'Other' && data.qa_kioskType_other) data.qa_kioskType = data.qa_kioskType_other;
+            if (data.qa_vendingElevator === 'Other' && data.qa_vendingElevator_other) data.qa_vendingElevator = data.qa_vendingElevator_other;
+            if (data.qa_screenSize === 'Other' && data.qa_screenSize_other) data.qa_screenSize = data.qa_screenSize_other;
+            if (data.qa_workflow === 'Other' && data.qa_workflow_other) data.qa_workflow = data.qa_workflow_other;
+            if (data.qa_authPayment === 'Other' && data.qa_authPayment_other) data.qa_authPayment = data.qa_authPayment_other;
+            if (data.qa_hosting === 'Other' && data.qa_hosting_other) data.qa_hosting = data.qa_hosting_other;
+            if (data.qa_internetConnectivity === 'Other' && data.qa_internetConnectivity_other) data.qa_internetConnectivity = data.qa_internetConnectivity_other;
+            if (data.qa_voltage === 'Other' && data.qa_voltage_other) data.qa_voltage = data.qa_voltage_other;
+            if (data.qa_plugType === 'Other' && data.qa_plugType_other) data.qa_plugType = data.qa_plugType_other;
+
+            if (data.qa_shippingDate) data.qa_shippingDate = formatDate(data.qa_shippingDate);
+            if (data.qa_vinylDate) data.qa_vinylDate = formatDate(data.qa_vinylDate);
+
+            const emailContent = `Subject: QA Checklist – ${data.qa_deploymentName}
+
+QA Checklist – ${data.qa_deploymentName}
+
+Sales Order: ${data.qa_salesOrder}
+
+Shipping Date: ${data.qa_shippingDate}
+
+Vinyl Date: ${data.qa_vinylDate}
+
+Naming Convention and Address:
+Naming: ${data.qa_naming}
+Address: ${data.qa_address}
+
+Channel Partner (CP): ${data.qa_channelPartner}
+End Client (CX): ${data.qa_endClient}
+
+Kiosk Type: ${data.qa_kioskType}
+
+Vending Unit Elevator: ${data.qa_vendingElevator}
+
+Screen Size: ${data.qa_screenSize}
+
+Workflow: ${data.qa_workflow}
+
+Authentication/Payment Device: ${data.qa_authPayment}
+
+Payment Device: ${data.qa_paymentDevice}
+
+Language: ${data.qa_language}
+
+ADA Keypad: ${data.qa_adaKeypad}
+
+Hosting: ${data.qa_hosting}
+
+Internet Connectivity: ${data.qa_internetConnectivity}
+
+IT Site Survey: ${data.qa_itSiteSurvey}
+
+Payment Device Configuration: ${data.qa_paymentConfig}
+
+Product Template: ${data.qa_productTemplate}
+
+UI for Previous Deployments: ${data.qa_uiPrevious}
+
+UI Task Link: ${data.qa_uiTaskLink}
+
+Orientation of the Vending/Locker: ${data.qa_orientation}
+
+Voltage: ${data.qa_voltage}
+
+Plug Type: ${data.qa_plugType}
+
+Special Requirements: ${data.qa_specialRequirements}`;
+            displayEmail(emailContent);
+        }
+
+        // Generate UI Email
+        function generateUIEmail() {
+            const form = document.getElementById('uiForm');
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                if (key.includes('workflows') || key.includes('languages') || key.includes('branding')) continue;
+                data[key] = value || 'N/A';
+            }
+            const workflows = Array.from(form.querySelectorAll('input[name="ui_workflows"]:checked')).map(cb => cb.value);
+            const languages = Array.from(form.querySelectorAll('input[name="ui_languages"]:checked')).map(cb => cb.value);
+            const branding = Array.from(form.querySelectorAll('input[name="ui_branding"]:checked')).map(cb => cb.value);
+
+            // Other overrides for UI
+            if (data.ui_kioskType === 'Other' && data.ui_kioskType_other) data.ui_kioskType = data.ui_kioskType_other;
+            if (data.ui_vendingElevator === 'Other' && data.ui_vendingElevator_other) data.ui_vendingElevator = data.ui_vendingElevator_other;
+            if (data.ui_screenSize === 'Other' && data.ui_screenSize_other) data.ui_screenSize = data.ui_screenSize_other;
+            if (data.ui_authentication === 'Other' && data.ui_authentication_other) data.ui_authentication = data.ui_authentication_other;
+            if (data.ui_hosting === 'Other' && data.ui_hosting_other) data.ui_hosting = data.ui_hosting_other;
+
+            let workflowList = workflows.join(', ');
+            if (data.ui_workflowOther && data.ui_workflowOther !== 'N/A') workflowList += (workflowList ? ', ' : '') + data.ui_workflowOther;
+            let languageList = languages.join(', ');
+            if (data.ui_languageOther && data.ui_languageOther !== 'N/A') languageList += (languageList ? ', ' : '') + data.ui_languageOther;
+            let brandingList = branding.join(', ');
+            if (data.ui_brandingOther && data.ui_brandingOther !== 'N/A') brandingList += (brandingList ? ', ' : '') + data.ui_brandingOther;
+
+            const emailContent = `Subject: UI Request
+
+UI Request
+
+CP: ${data.ui_cp}
+CX: ${data.ui_cx}
+Kiosk Type: ${data.ui_kioskType}
+Vending Unit Elevator: ${data.ui_vendingElevator}
+Screen Size: ${data.ui_screenSize}
+Smart Workflows: ${workflowList || 'N/A'}
+Authentication: ${data.ui_authentication}
+Payment Device: ${data.ui_paymentDevice}
+Language: ${languageList || 'English (Default)'}
+ADA Keypad: ${data.ui_adaKeypad}
+API Integration: ${data.ui_apiIntegration}
+Hosting: ${data.ui_hosting}
+Vision URL: ${data.ui_visionUrl}
+Attachments: ${data.ui_attachments}
+Branding Documents: ${brandingList || 'N/A'}
+SOW: ${data.ui_sow}`;
+            displayEmail(emailContent);
+        }
+
+        // Auto-save functionality
+        const allInputs = document.querySelectorAll('input, select, textarea');
+        allInputs.forEach(input => {
+            const savedValue = localStorage.getItem(`form_${input.name}`);
+            if (savedValue && input.type !== 'date') {
+                if (input.type === 'checkbox') input.checked = savedValue === 'true';
+                else input.value = savedValue;
+                if (input.classList.contains('other-input') && input.value) input.style.display = 'block';
+            }
+            input.addEventListener('change', () => {
+                if (input.type === 'checkbox') localStorage.setItem(`form_${input.name}`, input.checked);
+                else localStorage.setItem(`form_${input.name}`, input.value);
+            });
         });
-      }
-    }
-
-    function downloadUATExcel() {
-      // Collect header information
-      const headerData = {
-        projectManager: document.getElementById('uat-pm').value || '',
-        so: document.getElementById('uat-so').value || '',
-        customer: document.getElementById('uat-customer').value || '',
-        formFactor: document.getElementById('uat-form-factor').value || '',
-        naming: document.getElementById('uat-naming').value || '',
-        qaqc: document.getElementById('uat-qaqc').value || '',
-        dateCompleted: document.getElementById('uat-date-completed').value || '',
-        shippingAddress: document.getElementById('uat-shipping-address').value || '',
-        shippingDate: document.getElementById('uat-shipping-date').value || '',
-        specialHw: document.getElementById('uat-special-hw').value || '',
-        frontCamera: document.getElementById('uat-front-camera').value || '',
-        internet: document.getElementById('uat-internet').value || '',
-        badgeReader: document.getElementById('uat-badge-reader').value || '',
-        receiptPrinter: document.getElementById('uat-receipt-printer').value || '',
-        paymentMethod: document.getElementById('uat-payment-method').value || '',
-        uiLanguage: document.getElementById('uat-ui-language').value || '',
-        keyboard: document.getElementById('uat-keyboard').value || '',
-        serialNo: document.getElementById('uat-serial-no').value || '',
-        crateWhiteGlove: document.getElementById('uat-crate-white-glove').value || '',
-        powerPlugType: document.getElementById('uat-power-plug-type').value || '',
-        plugPicture: document.getElementById('uat-plug-picture').value || '',
-        powerData: document.getElementById('uat-power-data').value || '',
-        keyQuantity: document.getElementById('uat-key-quantity').value || '',
-        keySerial: document.getElementById('uat-key-serial').value || ''
-      };
-
-      // Collect checklist data
-      const checklistData = [];
-      UAT_CHECKLIST_ITEMS.forEach(item => {
-        const checkbox = document.getElementById(`uat-item-${item.sn}`);
-        const remarks = document.getElementById(`uat-remarks-${item.sn}`);
-        
-        checklistData.push({
-          sn: item.sn,
-          description: item.description,
-          result: checkbox.checked ? 'Pass' : 'Fail',
-          remarks: remarks.value
-<script>
-function switchTemplate() {
-    const selected = document.getElementById("templateSelect").value;
-
-    // Hide all template sections
-    document.querySelectorAll(".template-section").forEach(sec => {
-        sec.style.display = "none";
-    });
-
-    // Show the chosen one
-    if (selected === "installation") {
-        document.getElementById("installation-ticket-section").style.display = "block";
-    } else if (selected === "qa") {
-        document.getElementById("qa-checklist-section").style.display = "block";
-    } else if (selected === "ui") {
-        document.getElementById("ui-request-section").style.display = "block";
-    } else if (selected === "uat") {
-        document.getElementById("uat-generator-section").style.display = "block";
-    }
-}
-
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("templateSelect").addEventListener("change", switchTemplate);
-    switchTemplate(); // load default on startup
-});
-</script>
+    </script>
+</body>
+</html>
+   
